@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 from lib_nrf24 import NRF24
 from time import sleep
 import spidev
-from sendData import connection
+from sendData import connection,conn2
 
 GPIO.setmode(GPIO.BCM)
 
@@ -28,7 +28,7 @@ def change_params(radio):
     #radio.openReadingPipe(1, pipes[0])
     radio.setChannel(0x70)
     radio.startListening()
-    print(2)
+    #print(2)
 #    sleep(2)
 
 
@@ -38,7 +38,7 @@ def revert_params(radio):
     #radio.openReadingPipe(1, pipes[1])
     radio.setChannel(0x64)
     radio.startListening()
-    print(1)
+    #print(1)
     #sleep(1)
 
 def takeData(radio):
@@ -57,11 +57,15 @@ def takeData(radio):
             string += chr(n)
     print("Out received message decodes to: {}".format(string))
     var = string.split('#')
-    air = var[0]
-    temp = var[1]
+    air = float(var[0])
+    temp = float(var[1])
+    sec = int(var[2])
 
-    print("AireQua=",air," temp=",temp)
-    connection(temp,air)
+    print("AireQua=",air," temp=",temp," Section: ",sec)
+    if sec == 1:
+        connection(temp,air)
+    elif sec == 2:
+        conn2(temp,air)
 
     sleep(20)
 
