@@ -168,9 +168,9 @@
 	</div>
 	<!-- <div id="ph-container" style="float:left;"></div> -->
 	<div class="row">
-		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
-		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
-		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
+			<div class="col-lg-4" style="border: 1px solid;text-align: center;">Section 1</div>
+		<div class="col-lg-4" style="border: 1px solid;text-align: center;">Ammonia Concentration</div>
+		<div class="col-lg-4" style="border: 1px solid;text-align: center;">Temperature</div>
 	</div>
 	<div class="row">
 		<div id="ph-container1" class="col-lg-4" style="border: 1px solid;text-align: center;"></div>
@@ -214,7 +214,7 @@ FusionCharts.ready(function () {
   LoadChart2();
   LoadChart3();
   LoadChart4();
-  LoadChart5();
+
 
 
 
@@ -226,13 +226,13 @@ window.setInterval(function(){
  update2();
  update3();
  update4();
- update5();
+
 
 }, 5000);
 
 function LoadChart1() {
   $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field1/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field1/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) {
@@ -296,7 +296,7 @@ function LoadChart1() {
 }
 function LoadChart2() {
   $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field2/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field2/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) {
@@ -360,7 +360,7 @@ function LoadChart2() {
 }
 function LoadChart3() {
   $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field3/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field3/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) {
@@ -424,7 +424,7 @@ function LoadChart3() {
 }
 function LoadChart4() {
   $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field4/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field4/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) {
@@ -486,73 +486,12 @@ function LoadChart4() {
     }
   });
 }
-function LoadChart5() {
-  $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field5/last?api_key=DOAFDOS69FE9Y914', // local address
-    type: 'GET',
-    crossDomain: true,
-    success: function (data) {
-    	console.log('xhr success')
-      //if (data.success) {
-      	console.log("success");
-        console.log(data)
-        var Temperature = data;
-        var phfusioncharts = new FusionCharts({
-          type: 'angulargauge',
-          renderAt: 'ph-container5',
-          id:"temp5",
-          width: '450',
-          height: '270',
-          dataFormat: 'json',
-          dataSource: {
-            "chart": {
-              "caption": "Lab 5",
-              "lowerLimit": "0",
-              "upperLimit": "80",
-              "showValue": "1",
-              "valueBelowPivot": "1",
-              "theme": "fusion"
-            },
-            "colorRange": {
-              "color": [{
-                "minValue": "0",
-                "maxValue": "25",
-                "code": "#6baa01"
-              }, {
-                "minValue": "25",
-                "maxValue": "45",
-                "code": "#f8bd19"
-              }, {
-                "minValue": "50",
-                "maxValue": "80",
-                "code": "#e44a00"
-              }]
-            },
-            "dials": {
-              "dial": [{
-                "value": Temperature
-              }]
-            }
-          },
-       //    "events": {
-	      //   "rendered": function(evtObj, argObj) {
-	      //     evtObj.sender.intervalVar = setInterval(function() {
-	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
-	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
-	      //     }, 5000);
-	      //   },
-	      //   "disposed": function(evtObj, argObj) {
-	      //     clearInterval(evtObj.sender.intervalVar);
-	      //   }
-	      // }
-	    })
-	    phfusioncharts.render();
-    }
-  });
-}
+
+
+
 function update1(){
 	 $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field1/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field1/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) 
@@ -567,7 +506,7 @@ function update1(){
 }
 function update2(){
 	 $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field2/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/76150/fields/field2/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) 
@@ -582,7 +521,7 @@ function update2(){
 }
 function update3(){
 	 $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field3/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field3/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) 
@@ -597,7 +536,7 @@ function update3(){
 }
 function update4(){
 	 $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field4/last?api_key=DOAFDOS69FE9Y914', // local address
+    url: 'https://api.thingspeak.com/channels/762150/fields/field4/last?api_key=UX4ZTMFVQUS82QY7', // local address
     type: 'GET',
     crossDomain: true,
     success: function (data) 
@@ -610,21 +549,7 @@ function update4(){
    	}
   });                   	 	
 }
-function update5(){
-	 $.ajax({
-    url: 'https://api.thingspeak.com/channels/761799/fields/field5/last?api_key=DOAFDOS69FE9Y914', // local address
-    type: 'GET',
-    crossDomain: true,
-    success: function (data) 
-    {
-	    console.log(data);
-		var chartRef = FusionCharts("temp5");
-		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
-		var strData = "&value="+data;
-	   	chartRef.feedData(strData);  
-   	}
-  });                   	 	
-}
+
 </script>
 
 <!-- HTML -->
