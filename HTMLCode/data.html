@@ -1,0 +1,630 @@
+<!-- Styles -->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>TempChart</title>
+	<style>
+	#chartdiv {
+	  width: 100%;
+	  height: 500px;
+	}
+	body {
+	  /*padding-top: 100px;  padding due to fixed to top navbar */
+	}
+	* {
+	  box-sizing: border-box;
+	}
+
+	body {
+	  margin: 0px;
+	  font-family: 'segoe ui';
+	}
+
+	.nav {
+	  height: 50px;
+	  width: 100%;
+	  background-color: #4d4d4d;
+	  position: relative;
+	}
+
+	.nav > .nav-header {
+	  display: inline;
+	}
+
+	.nav > .nav-header > .nav-title {
+	  display: inline-block;
+	  font-size: 22px;
+	  color: #fff;
+	  padding: 10px 10px 10px 10px;
+	}
+
+	.nav > .nav-btn {
+	  display: none;
+	}
+
+	.nav > .nav-links {
+	  display: inline;
+	  float: right;
+	  font-size: 18px;
+	}
+
+	.nav > .nav-links > a {
+	  display: inline-block;
+	  padding: 13px 10px 13px 10px;
+	  text-decoration: none;
+	  color: #efefef;
+	}
+
+	.nav > .nav-links > a:hover {
+	  background-color: rgba(0, 0, 0, 0.3);
+	}
+
+	.nav > #nav-check {
+	  display: none;
+	}
+
+	@media (max-width:600px) {
+	  .nav > .nav-btn {
+	    display: inline-block;
+	    position: absolute;
+	    right: 0px;
+	    top: 0px;
+	  }
+	  .nav > .nav-btn > label {
+	    display: inline-block;
+	    width: 50px;
+	    height: 50px;
+	    padding: 13px;
+	  }
+	  .nav > .nav-btn > label:hover,.nav  #nav-check:checked ~ .nav-btn > label {
+	    background-color: rgba(0, 0, 0, 0.3);
+	  }
+	  .nav > .nav-btn > label > span {
+	    display: block;
+	    width: 25px;
+	    height: 10px;
+	    border-top: 2px solid #eee;
+	  }
+	  .nav > .nav-links {
+	    position: absolute;
+	    display: block;
+	    width: 100%;
+	    background-color: #333;
+	    height: 0px;
+	    transition: all 0.3s ease-in;
+	    overflow-y: hidden;
+	    top: 50px;
+	    left: 0px;
+	  }
+	  .nav > .nav-links > a {
+	    display: block;
+	    width: 100%;
+	  }
+	  .nav > #nav-check:not(:checked) ~ .nav-links {
+	    height: 0px;
+	  }
+	  .nav > #nav-check:checked ~ .nav-links {
+	    height: calc(100vh - 50px);
+	    overflow-y: auto;
+	  }
+	}
+	.count {
+		width: 110px;
+		height: 110px;
+		background: #abd2ab;
+		border-radius: 50%;
+		border: 1px solid gray;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: white;
+		font-weight: bold;
+		font-size: 40px;
+		font-family: verdana;
+		float: left;
+		margin: 30px;
+		text-shadow: 1px 1px black;
+		-webkit-box-shadow: 0px 0px 72px -9px rgba(0,0,0,0.75);
+		-moz-box-shadow: 0px 0px 72px -9px rgba(0,0,0,0.75);
+		box-shadow: 0px 0px 72px -9px rgba(0,0,0,0.75);
+	}
+	.col-lg-4{
+		text-anchor: middle;
+	    font-family: "Source Sans Pro";
+	    font-size: 18px;
+	    font-weight: bold;
+	}
+	</style>
+	<style type="text/css">
+	    g[class^='raphael-group-'][class$='-creditgroup'] {
+	         display:none !important;
+	    }
+	</style>
+</head>
+<body>
+	<div class="nav">
+		<input type="checkbox" id="nav-check">
+		<div class="nav-header">
+			<div class="nav-title">
+			 	IT Temperature Monitor
+			</div>
+		</div>
+		<div class="nav-btn">
+		<label for="nav-check">
+			<span></span>
+			<span></span>
+			<span></span>
+		</label>
+		</div>
+
+		<div class="nav-links" style="margin-left: 55%">
+		<a href="data.html" target="_blank">Home</a>
+		<a href="index.html" target="_blank">ThinkSpeak API</a>
+		<a href="#" target="_blank">Analysis</a>
+		<!-- <a href="https://jsfiddle.net/user/jo_Geek/" target="_blank">JsFiddle</a> -->
+		</div>
+	</div>
+	<!-- <div id="ph-container" style="float:left;"></div> -->
+	<div class="row">
+		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
+		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
+		<div class="col-lg-4" style="border: 1px solid;text-align: center;">AC Health Status : Good</div>
+	</div>
+	<div class="row">
+		<div id="ph-container1" class="col-lg-4" style="border: 1px solid;text-align: center;"></div>
+		<div id="ph-container2" class="col-lg-4" style="border: 1px solid;text-align: center;"></div>
+		<div id="ph-container3" class="col-lg-4" style="border: 1px solid;text-align: center;"></div>
+	</div>
+	<div class="row">
+		<div class="col-lg-4" style="margin-left: 18%; border-right: 1px solid;border-left: 1px solid;text-align: center;width: 270px;">AC Health Status : Good</div>
+		<div class="col-lg-4" style="text-align: center;width: 270px;">AC Health Status : Good</div>
+		<div style="border-right:  1px solid;width: 10px;"></div>
+	</div>
+	<div class="row">
+		<div id="ph-container4" class="col-lg-4" style="margin-left: 18%; border: 1px solid"></div>
+		<div id="ph-container5" class="col-lg-4" style="border: 1px solid"></div>
+		<div id="ph-container" style="width: 10px; border: 1px solid"></div>
+	</div>
+	  
+	<br>
+
+</body>
+</html>
+
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+
+
+ <!-- Step 1 - Including the fusioncharts core library -->
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+<!-- Step 2 - Including the fusion theme -->
+<script type="text/javascript" src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.0.min.js" integrity="sha256-BJeo0qm959uMBGb65z40ejJYGSgR7REI4+CW1fNKwOg=" crossorigin="anonymous"></script>
+
+<!-- Chart code -->
+<script>
+FusionCharts.ready(function () {
+  LoadChart1();
+  LoadChart2();
+  LoadChart3();
+  LoadChart4();
+  LoadChart5();
+
+
+
+});
+
+window.setInterval(function(){
+  /// call your function here
+ update1();
+ update2();
+ update3();
+ update4();
+ update5();
+
+}, 5000);
+
+function LoadChart1() {
+  $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field1/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) {
+    	console.log('xhr success')
+      //if (data.success) {
+      	console.log("success");
+        console.log(data)
+        var Temperature = data;
+        var phfusioncharts = new FusionCharts({
+          type: 'angulargauge',
+          renderAt: 'ph-container1',
+          id:"temp1",
+          width: '450',
+          height: '280',
+          dataFormat: 'json',
+          dataSource: {
+            "chart": {
+              "caption": "Lab 1",
+              "lowerLimit": "0",
+              "upperLimit": "80",
+              "showValue": "1",
+              "valueBelowPivot": "1",
+              "theme": "fusion"
+            },
+            "colorRange": {
+              "color": [{
+                "minValue": "0",
+                "maxValue": "25",
+                "code": "#6baa01"
+              }, {
+                "minValue": "25",
+                "maxValue": "45",
+                "code": "#f8bd19"
+              }, {
+                "minValue": "50",
+                "maxValue": "80",
+                "code": "#e44a00"
+              }]
+            },
+            "dials": {
+              "dial": [{
+                "value": Temperature
+              }]
+            }
+          },
+       //    "events": {
+	      //   "rendered": function(evtObj, argObj) {
+	      //     evtObj.sender.intervalVar = setInterval(function() {
+	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
+	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
+	      //     }, 5000);
+	      //   },
+	      //   "disposed": function(evtObj, argObj) {
+	      //     clearInterval(evtObj.sender.intervalVar);
+	      //   }
+	      // }
+	    })
+	    phfusioncharts.render();
+    }
+  });
+}
+function LoadChart2() {
+  $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field2/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) {
+    	console.log('xhr success')
+      //if (data.success) {
+      	console.log("success");
+        console.log(data)
+        var Temperature = data;
+        var phfusioncharts = new FusionCharts({
+          type: 'angulargauge',
+          renderAt: 'ph-container2',
+          id:"temp2",
+          width: '450',
+          height: '280',
+          dataFormat: 'json',
+          dataSource: {
+            "chart": {
+              "caption": "Lab 2",
+              "lowerLimit": "0",
+              "upperLimit": "80",
+              "showValue": "1",
+              "valueBelowPivot": "1",
+              "theme": "fusion"
+            },
+            "colorRange": {
+              "color": [{
+                "minValue": "0",
+                "maxValue": "25",
+                "code": "#6baa01"
+              }, {
+                "minValue": "25",
+                "maxValue": "45",
+                "code": "#f8bd19"
+              }, {
+                "minValue": "50",
+                "maxValue": "80",
+                "code": "#e44a00"
+              }]
+            },
+            "dials": {
+              "dial": [{
+                "value": Temperature
+              }]
+            }
+          },
+       //    "events": {
+	      //   "rendered": function(evtObj, argObj) {
+	      //     evtObj.sender.intervalVar = setInterval(function() {
+	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
+	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
+	      //     }, 5000);
+	      //   },
+	      //   "disposed": function(evtObj, argObj) {
+	      //     clearInterval(evtObj.sender.intervalVar);
+	      //   }
+	      // }
+	    })
+	    phfusioncharts.render();
+    }
+  });
+}
+function LoadChart3() {
+  $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field3/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) {
+    	console.log('xhr success')
+      //if (data.success) {
+      	console.log("success");
+        console.log(data)
+        var Temperature = data;
+        var phfusioncharts = new FusionCharts({
+          type: 'angulargauge',
+          renderAt: 'ph-container3',
+          id:"temp3",
+          width: '450',
+          height: '280',
+          dataFormat: 'json',
+          dataSource: {
+            "chart": {
+              "caption": "Lab 3",
+              "lowerLimit": "0",
+              "upperLimit": "80",
+              "showValue": "1",
+              "valueBelowPivot": "1",
+              "theme": "fusion"
+            },
+            "colorRange": {
+              "color": [{
+                "minValue": "0",
+                "maxValue": "25",
+                "code": "#6baa01"
+              }, {
+                "minValue": "25",
+                "maxValue": "45",
+                "code": "#f8bd19"
+              }, {
+                "minValue": "50",
+                "maxValue": "80",
+                "code": "#e44a00"
+              }]
+            },
+            "dials": {
+              "dial": [{
+                "value": Temperature
+              }]
+            }
+          },
+       //    "events": {
+	      //   "rendered": function(evtObj, argObj) {
+	      //     evtObj.sender.intervalVar = setInterval(function() {
+	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
+	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
+	      //     }, 5000);
+	      //   },
+	      //   "disposed": function(evtObj, argObj) {
+	      //     clearInterval(evtObj.sender.intervalVar);
+	      //   }
+	      // }
+	    })
+	    phfusioncharts.render();
+    }
+  });
+}
+function LoadChart4() {
+  $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field4/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) {
+    	console.log('xhr success')
+      //if (data.success) {
+      	console.log("success");
+        console.log(data)
+        var Temperature = data;
+        var phfusioncharts = new FusionCharts({
+          type: 'angulargauge',
+          renderAt: 'ph-container4',
+          id:"temp4",
+          width: '450',
+          height: '270',
+          dataFormat: 'json',
+          dataSource: {
+            "chart": {
+              "caption": "Lab 4",
+              "lowerLimit": "0",
+              "upperLimit": "80",
+              "showValue": "1",
+              "valueBelowPivot": "1",
+              "theme": "fusion"
+            },
+            "colorRange": {
+              "color": [{
+                "minValue": "0",
+                "maxValue": "25",
+                "code": "#6baa01"
+              }, {
+                "minValue": "25",
+                "maxValue": "45",
+                "code": "#f8bd19"
+              }, {
+                "minValue": "50",
+                "maxValue": "80",
+                "code": "#e44a00"
+              }]
+            },
+            "dials": {
+              "dial": [{
+                "value": Temperature
+              }]
+            }
+          },
+       //    "events": {
+	      //   "rendered": function(evtObj, argObj) {
+	      //     evtObj.sender.intervalVar = setInterval(function() {
+	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
+	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
+	      //     }, 5000);
+	      //   },
+	      //   "disposed": function(evtObj, argObj) {
+	      //     clearInterval(evtObj.sender.intervalVar);
+	      //   }
+	      // }
+	    })
+	    phfusioncharts.render();
+    }
+  });
+}
+function LoadChart5() {
+  $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field5/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) {
+    	console.log('xhr success')
+      //if (data.success) {
+      	console.log("success");
+        console.log(data)
+        var Temperature = data;
+        var phfusioncharts = new FusionCharts({
+          type: 'angulargauge',
+          renderAt: 'ph-container5',
+          id:"temp5",
+          width: '450',
+          height: '270',
+          dataFormat: 'json',
+          dataSource: {
+            "chart": {
+              "caption": "Lab 5",
+              "lowerLimit": "0",
+              "upperLimit": "80",
+              "showValue": "1",
+              "valueBelowPivot": "1",
+              "theme": "fusion"
+            },
+            "colorRange": {
+              "color": [{
+                "minValue": "0",
+                "maxValue": "25",
+                "code": "#6baa01"
+              }, {
+                "minValue": "25",
+                "maxValue": "45",
+                "code": "#f8bd19"
+              }, {
+                "minValue": "50",
+                "maxValue": "80",
+                "code": "#e44a00"
+              }]
+            },
+            "dials": {
+              "dial": [{
+                "value": Temperature
+              }]
+            }
+          },
+       //    "events": {
+	      //   "rendered": function(evtObj, argObj) {
+	      //     evtObj.sender.intervalVar = setInterval(function() {
+	      //       var prcnt = 65 + parseInt(Math.floor(Math.random() * 10), 10);
+	      //       FusionCharts.items["temp"].feedData("value=" + prcnt);
+	      //     }, 5000);
+	      //   },
+	      //   "disposed": function(evtObj, argObj) {
+	      //     clearInterval(evtObj.sender.intervalVar);
+	      //   }
+	      // }
+	    })
+	    phfusioncharts.render();
+    }
+  });
+}
+function update1(){
+	 $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field1/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) 
+    {
+	    console.log(data);
+		var chartRef = FusionCharts("temp1");
+		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
+		var strData = "&value="+data;
+	   	chartRef.feedData(strData);  
+   	}
+  });                   	 	
+}
+function update2(){
+	 $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field2/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) 
+    {
+	    console.log(data);
+		var chartRef = FusionCharts("temp2");
+		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
+		var strData = "&value="+data;
+	   	chartRef.feedData(strData);  
+   	}
+  });                   	 	
+}
+function update3(){
+	 $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field3/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) 
+    {
+	    console.log(data);
+		var chartRef = FusionCharts("temp3");
+		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
+		var strData = "&value="+data;
+	   	chartRef.feedData(strData);  
+   	}
+  });                   	 	
+}
+function update4(){
+	 $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field4/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) 
+    {
+	    console.log(data);
+		var chartRef = FusionCharts("temp4");
+		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
+		var strData = "&value="+data;
+	   	chartRef.feedData(strData);  
+   	}
+  });                   	 	
+}
+function update5(){
+	 $.ajax({
+    url: 'https://api.thingspeak.com/channels/761799/fields/field5/last?api_key=DOAFDOS69FE9Y914', // local address
+    type: 'GET',
+    crossDomain: true,
+    success: function (data) 
+    {
+	    console.log(data);
+		var chartRef = FusionCharts("temp5");
+		// var strData = "&value=" + Math.floor(Math.random()*(55-25+1)+25);
+		var strData = "&value="+data;
+	   	chartRef.feedData(strData);  
+   	}
+  });                   	 	
+}
+</script>
+
+<!-- HTML -->
